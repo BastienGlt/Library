@@ -1,0 +1,106 @@
+// Types pour Open Library API
+
+export interface Book {
+  key: string;
+  title: string;
+  author_name?: string[];
+  author_key?: string[];
+  first_publish_year?: number;
+  isbn?: string[];
+  cover_i?: number;
+  publisher?: string[];
+  subject?: string[];
+  language?: string[];
+  number_of_pages_median?: number;
+  edition_count?: number;
+}
+
+export interface BookSearchResponse {
+  numFound: number;
+  start: number;
+  docs: Book[];
+}
+
+export interface BookDetail {
+  key: string;
+  title: string;
+  description?: string | { type: string; value: string };
+  covers?: number[];
+  authors?: Array<{ author: { key: string } }>;
+  subjects?: string[];
+  subject_places?: string[];
+  subject_times?: string[];
+  publishers?: string[];
+  publish_date?: string;
+  publish_places?: string[];
+  number_of_pages?: number;
+  isbn_10?: string[];
+  isbn_13?: string[];
+  works?: Array<{ key: string }>;
+}
+
+export interface Author {
+  key: string;
+  name: string;
+  personal_name?: string;
+  birth_date?: string;
+  death_date?: string;
+  bio?: string | { type: string; value: string };
+  photos?: number[];
+  alternate_names?: string[];
+}
+
+export interface RecentChange {
+  id: string;
+  kind: string;
+  timestamp: string;
+  author?: {
+    key: string;
+  } | null;
+  ip?: string;
+  comment?: string;
+  changes?: Array<{
+    key: string;
+    revision: number;
+  }>;
+  data?: {
+    master?: string;
+    duplicates?: string[];
+    [key: string]: unknown;
+  };
+}
+
+export interface SearchParams {
+  query?: string;
+  author?: string;
+  title?: string;
+  subject?: string;
+  publisher?: string;
+  language?: string;
+  page?: number;
+}
+
+// Types pour les endpoints spécifiques selon la doc
+export interface WorkEditions {
+  size: number;
+  links: {
+    self: string;
+    work: string;
+    next?: string;
+  };
+  entries: BookDetail[];
+}
+
+export interface AuthorWorks {
+  size: number;
+  links: {
+    self: string;
+    author: string;
+    next?: string;
+  };
+  entries: Array<{
+    key: string;
+    title: string;
+    [key: string]: unknown;
+  }>;
+}

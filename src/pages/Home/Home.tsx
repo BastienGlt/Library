@@ -1,59 +1,50 @@
 import { Hero } from '@/components/Hero';
-import { FeatureCard } from '@/components/FeatureCard';
-import type { FeatureCardProps } from '@/components/FeatureCard';
+import { BookCard } from '@/components/BookCard';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
+import { ErrorMessage } from '@/components/ErrorMessage';
 import { Button } from '@/components/Button';
-import './Home.css';
+import { useRecentChanges } from '@/hooks/useRecentChanges';
+import { Link } from 'react-router';
 
 const Home = () => {
-  const features: FeatureCardProps[] = [
-    {
-      icon: '📚',
-      title: 'Catalogue complet',
-      description: 'Parcourez et organisez votre collection de livres',
-    },
-    {
-      icon: '🔍',
-      title: 'Recherche avancée',
-      description: 'Trouvez rapidement n\'importe quel livre de votre bibliothèque',
-    },
-    {
-      icon: '⭐',
-      title: 'Favoris',
-      description: 'Marquez vos livres préférés pour un accès rapide',
-    },
-  ];
-
-  const handleExplore = (): void => {
-    // TODO: Implémenter la navigation vers le catalogue
-    console.log('Navigation vers le catalogue');
-  };
+  const { books, loading, error } = useRecentChanges();
 
   return (
-    <div className="home">
+    <div className="w-full max-w-[75rem] mx-auto px-6 md:px-8 lg:px-10">
       <Hero
-        title="Bienvenue dans votre Bibliothèque"
-        subtitle="Gérez votre collection de livres facilement et efficacement"
+        title="Bibliothèque Municipale"
+        subtitle="Découvrez notre collection de livres et explorez les derniers ajouts"
       />
 
-      <section className="home__features">
-        {features.map((feature) => (
-          <FeatureCard
-            key={feature.title}
-            icon={feature.icon}
-            title={feature.title}
-            description={feature.description}
-          />
-        ))}
-      </section>
+      <section className="mb-12">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-3xl font-bold text-gray-900">
+            Derniers livres ajoutés
+          </h2>
+          <Link to="/search">
+            <Button variant="secondary">
+              Recherche avancée
+            </Button>
+          </Link>
+        </div>
 
-      <section className="home__cta">
-        <h2 className="home__cta-title">Commencez dès maintenant</h2>
-        <p className="home__cta-text">
-          Explorez votre bibliothèque et découvrez de nouveaux livres
-        </p>
-        <Button size="large" onClick={handleExplore}>
-          Explorer la bibliothèque
-        </Button>
+        {loading && <LoadingSpinner size="large" message="Chargement des livres..." />}
+        
+        {error && <ErrorMessage message={error} />}
+        
+        {!loading && !error && books.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 md:gap-6">
+            {books.map((book) => (
+              <BookCard key={book.key} book={book} />
+            ))}
+          </div>
+        )}
+
+        {!loading && !error && books.length === 0 && (
+          <p className="text-center text-gray-600 py-12">
+            Aucun livre récent trouvé
+          </p>
+        )}
       </section>
     </div>
   );

@@ -1,11 +1,61 @@
 import { Link } from "react-router";
+import { SearchBar } from "@/components/SearchBar";
 
-const Header = () => {
-
+export const Header = () => {
   return (
-    <header>
-      <h1>Library</h1>
+    <header className="bg-white shadow-md sticky top-0 z-50">
+      <div className="max-w-[75rem] mx-auto px-6 md:px-8 lg:px-10">
+        <div className="flex flex-col md:flex-row items-center gap-4 py-4 md:py-0">
+          <div className="flex items-center justify-between w-full md:w-auto md:h-20">
+            <Link 
+              to="/" 
+              className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-700 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
+            >
+              📚 Library
+            </Link>
+            
+            <nav className="flex items-center gap-2 md:hidden">
+              <Link 
+                to="/" 
+                className="text-gray-700 hover:text-indigo-600 font-medium transition-colors px-3 py-2 rounded-lg hover:bg-gray-50"
+              >
+                Accueil
+              </Link>
+              <Link 
+                to="/search" 
+                className="text-gray-700 hover:text-indigo-600 font-medium transition-colors px-3 py-2 rounded-lg hover:bg-gray-50"
+              >
+                Recherche
+              </Link>
+            </nav>
+          </div>
+          
+          <div className="hidden md:flex flex-1 max-w-2xl mx-4">
+            <SearchBar placeholder="Recherche rapide..." compact />
+          </div>
+          
+          <nav className="hidden md:flex items-center gap-4">
+            <Link 
+              to="/" 
+              className="text-gray-700 hover:text-indigo-600 font-medium transition-colors px-3 py-2 rounded-lg hover:bg-gray-50"
+            >
+              Accueil
+            </Link>
+            <Link 
+              to="/search" 
+              className="text-gray-700 hover:text-indigo-600 font-medium transition-colors px-3 py-2 rounded-lg hover:bg-gray-50"
+            >
+              Recherche
+            </Link>
+          </nav>
+
+          <div className="w-full md:hidden">
+            <SearchBar placeholder="Recherche rapide..." compact />
+          </div>
+        </div>
+      </div>
     </header>
   );
 };
+
 export default Header;

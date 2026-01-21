@@ -1,5 +1,3 @@
-import './FeatureCard.css';
-
 export interface FeatureCardProps {
   icon: string;
   title: string;
@@ -8,12 +6,16 @@ export interface FeatureCardProps {
 
 export const FeatureCard = ({ icon, title, description }: FeatureCardProps) => {
   return (
-    <article className="feature-card">
-      <div className="feature-card__icon" aria-hidden="true">
+    <article className="bg-white p-8 md:p-10 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 flex flex-col items-center text-center h-full focus-within:outline focus-within:outline-2 focus-within:outline-indigo-600 focus-within:outline-offset-2">
+      <div className="text-6xl mb-6 leading-none" aria-hidden="true">
         {icon}
       </div>
-      <h3 className="feature-card__title">{title}</h3>
-      <p className="feature-card__description">{description}</p>
+      <h3 className="text-2xl font-semibold mb-4 text-gray-900">
+        {title}
+      </h3>
+      <p className="text-base text-gray-600 leading-relaxed m-0">
+        {description}
+      </p>
     </article>
   );
 };
