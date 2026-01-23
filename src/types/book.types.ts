@@ -78,6 +78,9 @@ export interface SearchParams {
   publisher?: string;
   language?: string;
   page?: number;
+  sort?: 'new' | 'old' | 'random' | 'key';
+  yearFrom?: number;
+  yearTo?: number;
 }
 
 // Types pour les endpoints spécifiques selon la doc
@@ -103,4 +106,59 @@ export interface AuthorWorks {
     title: string;
     [key: string]: unknown;
   }>;
+}
+
+export interface SubjectResponse {
+  key: string;
+  name: string;
+  subject_type: string;
+  work_count: number;
+  works: SubjectWork[];
+  ebook_count?: number;
+  authors?: SubjectAuthor[];
+  subjects?: string[];
+  publishers?: SubjectPublisher[];
+}
+
+export interface SubjectWork {
+  key: string;
+  title: string;
+  edition_count: number;
+  cover_id?: number;
+  cover_edition_key?: string;
+  subject: string[];
+  ia_collection?: string[];
+  lendinglibrary?: boolean;
+  printdisabled?: boolean;
+  lending_edition?: string;
+  lending_identifier?: string;
+  authors: Array<{
+    key: string;
+    name: string;
+  }>;
+  first_publish_year?: number;
+  ia?: string[];
+  public_scan?: boolean;
+  has_fulltext?: boolean;
+  availability?: {
+    status: string;
+    available_to_browse?: boolean;
+    available_to_borrow?: boolean;
+    available_to_waitlist?: boolean;
+    is_printdisabled?: boolean;
+    is_readable?: boolean;
+    is_lendable?: boolean;
+    identifier?: string;
+  };
+}
+
+export interface SubjectAuthor {
+  key: string;
+  name: string;
+  work_count: number;
+}
+
+export interface SubjectPublisher {
+  name: string;
+  count: number;
 }

@@ -15,11 +15,11 @@ export const Button = ({
   disabled = false,
   type = 'button',
 }: ButtonProps) => {
-  const baseClasses = 'font-semibold rounded-lg cursor-pointer transition-all duration-200 hover:shadow-lg active:translate-y-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-600 focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed inline-block text-center';
+  const baseClasses = 'font-semibold rounded-lg cursor-pointer transition-all duration-200 hover:shadow-lg active:translate-y-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-600 dark:focus-visible:outline-indigo-500 focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed inline-block text-center';
   
   const variantClasses = {
-    primary: 'bg-gradient-to-r from-indigo-600 to-purple-700 text-white hover:shadow-[0_8px_24px_rgba(102,126,234,0.4)]',
-    secondary: 'bg-gray-50 text-indigo-600 border-2 border-indigo-600 hover:bg-gray-100',
+    primary: 'bg-gradient-to-r from-indigo-600 to-purple-700 dark:from-indigo-500 dark:to-purple-600 text-white hover:shadow-[0_8px_24px_rgba(102,126,234,0.4)] dark:hover:shadow-[0_8px_24px_rgba(79,70,229,0.5)]',
+    secondary: 'bg-gray-50 dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 border-2 border-indigo-600 dark:border-indigo-500 hover:bg-gray-100 dark:hover:bg-gray-700',
   };
   
   const sizeClasses = {

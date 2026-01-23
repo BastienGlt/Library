@@ -1,1 +1,8 @@
 @import "tailwindcss";
+
+@theme {
+  /* Configuration du mode dark basé sur la classe */
+  --color-scheme: light dark;
+}
+
+@variant dark (&:where(.dark, .dark *));

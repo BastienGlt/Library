@@ -12,9 +12,9 @@ export const LoadingSpinner = ({ size = 'medium', message }: LoadingSpinnerProps
 
   return (
     <div className="flex flex-col items-center justify-center p-8">
-      <div className={`${sizeClasses[size]} border-4 border-gray-200 border-t-indigo-600 rounded-full animate-spin`} />
+      <div className={`${sizeClasses[size]} border-4 border-gray-200 dark:border-gray-700 border-t-indigo-600 dark:border-t-indigo-500 rounded-full animate-spin`} />
       {message && (
-        <p className="mt-4 text-gray-600 text-center">{message}</p>
+        <p className="mt-4 text-gray-600 dark:text-gray-400 text-center">{message}</p>
       )}
     </div>
   );

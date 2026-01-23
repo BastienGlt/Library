@@ -1,9 +1,10 @@
 import { Link } from "react-router";
 import { SearchBar } from "@/components/SearchBar";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const Header = () => {
   return (
-    <header className="bg-white shadow-md sticky top-0 z-50">
+    <header className="bg-white dark:bg-gray-900 shadow-md dark:shadow-gray-800 sticky top-0 z-50 transition-colors">
       <div className="max-w-[75rem] mx-auto px-6 md:px-8 lg:px-10">
         <div className="flex flex-col md:flex-row items-center gap-4 py-4 md:py-0">
           <div className="flex items-center justify-between w-full md:w-auto md:h-20">
@@ -15,15 +16,16 @@ export const Header = () => {
             </Link>
             
             <nav className="flex items-center gap-2 md:hidden">
+              <ThemeToggle />
               <Link 
                 to="/" 
-                className="text-gray-700 hover:text-indigo-600 font-medium transition-colors px-3 py-2 rounded-lg hover:bg-gray-50"
+                className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
               >
                 Accueil
               </Link>
               <Link 
                 to="/search" 
-                className="text-gray-700 hover:text-indigo-600 font-medium transition-colors px-3 py-2 rounded-lg hover:bg-gray-50"
+                className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
               >
                 Recherche
               </Link>
@@ -37,16 +39,17 @@ export const Header = () => {
           <nav className="hidden md:flex items-center gap-4">
             <Link 
               to="/" 
-              className="text-gray-700 hover:text-indigo-600 font-medium transition-colors px-3 py-2 rounded-lg hover:bg-gray-50"
+              className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
             >
               Accueil
             </Link>
             <Link 
               to="/search" 
-              className="text-gray-700 hover:text-indigo-600 font-medium transition-colors px-3 py-2 rounded-lg hover:bg-gray-50"
+              className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
             >
               Recherche
             </Link>
+            <ThemeToggle />
           </nav>
 
           <div className="w-full md:hidden">

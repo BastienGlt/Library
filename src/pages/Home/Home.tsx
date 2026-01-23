@@ -18,7 +18,7 @@ const Home = () => {
 
       <section className="mb-12">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-3xl font-bold text-gray-900">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
             Derniers livres ajoutés
           </h2>
           <Link to="/search">
@@ -41,7 +41,7 @@ const Home = () => {
         )}
 
         {!loading && !error && books.length === 0 && (
-          <p className="text-center text-gray-600 py-12">
+          <p className="text-center text-gray-600 dark:text-gray-400 py-12">
             Aucun livre récent trouvé
           </p>
         )}

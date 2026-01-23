@@ -1,50 +1,51 @@
-import { useState, useEffect } from 'react';
+import { useQuery, useQueries } from '@tanstack/react-query';
 import { getBookDetail, getAuthor } from '@/services/book.service';
 import { searchWikipedia } from '@/services/wikipedia.service';
+import { queryKeys } from '@/lib/queryKeys';
 import type { BookDetail, Author } from '@/types/book.types';
 import type { WikipediaSearchResult } from '@/types/wikipedia.types';
 
 export const useBookDetail = (bookKey: string) => {
-  const [book, setBook] = useState<BookDetail | null>(null);
-  const [authors, setAuthors] = useState<Author[]>([]);
-  const [wikiInfo, setWikiInfo] = useState<WikipediaSearchResult | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  // Requête principale pour les détails du livre
+  const { data: book, isLoading: bookLoading, error: bookError } = useQuery({
+    queryKey: queryKeys.books.detail(bookKey),
+    queryFn: () => getBookDetail(bookKey),
+    enabled: Boolean(bookKey),
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  });
 
-  useEffect(() => {
-    const fetchBookDetail = async (): Promise<void> => {
-      setLoading(true);
-      setError(null);
+  // Requêtes parallèles pour les auteurs (uniquement si le livre est chargé)
+  const authorQueries = useQueries({
+    queries: (book?.authors ?? []).map(author => ({
+      queryKey: queryKeys.authors.detail(author.author.key),
+      queryFn: () => getAuthor(author.author.key),
+      staleTime: 15 * 60 * 1000, // 15 minutes
+      retry: 1,
+    })),
+  });
 
-      try {
-        const bookData = await getBookDetail(bookKey);
-        setBook(bookData);
+  // Requête Wikipedia (uniquement si le livre est chargé)
+  const { data: wikiInfo } = useQuery({
+    queryKey: queryKeys.wikipedia.search(book?.title ?? ''),
+    queryFn: () => searchWikipedia(book!.title),
+    enabled: Boolean(book?.title),
+    staleTime: 30 * 60 * 1000, // 30 minutes
+    retry: 1,
+  });
 
-        // Récupérer les auteurs
-        if (bookData.authors && bookData.authors.length > 0) {
-          const authorPromises = bookData.authors.map(a => 
-            getAuthor(a.author.key).catch(() => null)
-          );
-          const authorsData = await Promise.all(authorPromises);
-          setAuthors(authorsData.filter((a): a is Author => a !== null));
-        }
+  // Combiner les auteurs depuis les queries
+  const authors = authorQueries
+    .map(query => query.data)
+    .filter((author): author is Author => author !== undefined && author !== null);
 
-        // Rechercher sur Wikipedia
-        if (bookData.title) {
-          const wikiData = await searchWikipedia(bookData.title);
-          setWikiInfo(wikiData);
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Une erreur est survenue');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const authorsLoading = authorQueries.some(query => query.isLoading);
+  const loading = bookLoading || authorsLoading;
 
-    if (bookKey) {
-      fetchBookDetail();
-    }
-  }, [bookKey]);
-
-  return { book, authors, wikiInfo, loading, error };
+  return {
+    book: book ?? null,
+    authors,
+    wikiInfo: wikiInfo ?? null,
+    loading,
+    error: bookError ? (bookError instanceof Error ? bookError.message : 'Une erreur est survenue') : null,
+  };
 };

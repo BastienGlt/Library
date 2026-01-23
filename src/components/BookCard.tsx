@@ -14,9 +14,9 @@ export const BookCard = ({ book }: BookCardProps) => {
   return (
     <Link 
       to={`/book${book.key}`}
-      className="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full"
+      className="group bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900 hover:shadow-xl dark:hover:shadow-gray-900 transition-all duration-300 overflow-hidden flex flex-col h-full"
     >
-      <div className="aspect-[2/3] overflow-hidden bg-gray-100">
+      <div className="aspect-[2/3] overflow-hidden bg-gray-100 dark:bg-gray-700">
         <img 
           src={coverUrl} 
           alt={book.title}
@@ -26,21 +26,21 @@ export const BookCard = ({ book }: BookCardProps) => {
       </div>
       
       <div className="p-4 flex-1 flex flex-col">
-        <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-indigo-600 transition-colors">
+        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
           {book.title}
         </h3>
         
         {book.author_name && book.author_name.length > 0 && (
-          <p className="text-sm text-gray-600 mb-2 line-clamp-1">
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 line-clamp-1">
             {book.author_name.join(', ')}
           </p>
         )}
         
-        <div className="mt-auto flex items-center justify-between text-xs text-gray-500">
+        <div className="mt-auto flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
           {book.first_publish_year && (
             <span>{book.first_publish_year}</span>
           )}
-          <span className="text-indigo-600 group-hover:text-indigo-700 font-medium">
+          <span className="text-indigo-600 dark:text-indigo-400 group-hover:text-indigo-700 dark:group-hover:text-indigo-300 font-medium">
             Voir détails →
           </span>
         </div>

@@ -1,38 +1,25 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { searchBooks } from '@/services/book.service';
-import type { Book, SearchParams } from '@/types/book.types';
+import { queryKeys } from '@/lib/queryKeys';
+import type { SearchParams } from '@/types/book.types';
 
 export const useBookSearch = (params: SearchParams) => {
-  const [books, setBooks] = useState<Book[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [totalResults, setTotalResults] = useState<number>(0);
+  // Vérifier si au moins un critère de recherche est présent
+  const hasSearchCriteria = Boolean(
+    params.query || params.author || params.title || params.subject
+  );
 
-  useEffect(() => {
-    const fetchBooks = async (): Promise<void> => {
-      if (!params.query && !params.author && !params.title && !params.subject) {
-        setBooks([]);
-        setTotalResults(0);
-        return;
-      }
+  const { data, isLoading, error } = useQuery({
+    queryKey: queryKeys.books.search(params),
+    queryFn: () => searchBooks(params),
+    enabled: hasSearchCriteria,
+    staleTime: 3 * 60 * 1000, // 3 minutes
+  });
 
-      setLoading(true);
-      setError(null);
-
-      try {
-        const response = await searchBooks(params);
-        setBooks(response.docs);
-        setTotalResults(response.numFound);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Une erreur est survenue');
-        setBooks([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBooks();
-  }, [params.query, params.author, params.title, params.subject, params.publisher, params.language, params.page]);
-
-  return { books, loading, error, totalResults };
+  return {
+    books: data?.docs ?? [],
+    totalResults: data?.numFound ?? 0,
+    loading: isLoading,
+    error: error ? (error instanceof Error ? error.message : 'Une erreur est survenue') : null,
+  };
 };
