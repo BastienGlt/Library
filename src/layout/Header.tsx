@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { SearchBar } from "@/components/SearchBar";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { LibraryBig } from 'lucide-react';
 
 export const Header = () => {
   return (
@@ -10,9 +11,10 @@ export const Header = () => {
           <div className="flex items-center justify-between w-full md:w-auto md:h-20">
             <Link 
               to="/" 
-              className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-700 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
+              className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-700 bg-clip-text text-transparent hover:opacity-80 transition-opacity flex items-center"
             >
-              📚 Library
+              <LibraryBig className="w-8 h-8 mr-2 text-indigo-600 dark:text-indigo-400" style={{ color: 'rgb(79, 70, 229)' }} />
+              Library
             </Link>
             
             <nav className="flex items-center gap-2 md:hidden">

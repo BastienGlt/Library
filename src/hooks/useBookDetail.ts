@@ -2,8 +2,7 @@ import { useQuery, useQueries } from '@tanstack/react-query';
 import { getBookDetail, getAuthor } from '@/services/book.service';
 import { searchWikipedia } from '@/services/wikipedia.service';
 import { queryKeys } from '@/lib/queryKeys';
-import type { BookDetail, Author } from '@/types/book.types';
-import type { WikipediaSearchResult } from '@/types/wikipedia.types';
+import type { Author } from '@/types/book.types';
 
 export const useBookDetail = (bookKey: string) => {
   // Requête principale pour les détails du livre

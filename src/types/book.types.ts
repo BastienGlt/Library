@@ -1,5 +1,3 @@
-// Types pour Open Library API
-
 export interface Book {
   key: string;
   title: string;

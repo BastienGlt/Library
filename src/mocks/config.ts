@@ -62,7 +62,7 @@ export const disableMocking = (): void => {
  * Expose les fonctions dans la console pour faciliter le debug
  */
 if (typeof window !== 'undefined') {
-  (window as any).__MSW__ = {
+  (window as Window & typeof globalThis & { __MSW__: { enable: () => void; disable: () => void; isEnabled: () => boolean } }).__MSW__ = {
     enable: enableMocking,
     disable: disableMocking,
     isEnabled: isMockingEnabled,

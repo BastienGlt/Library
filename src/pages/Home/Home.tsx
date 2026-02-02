@@ -5,6 +5,7 @@ import { ErrorMessage } from '@/components/ErrorMessage';
 import { Button } from '@/components/Button';
 import { useRecentChanges } from '@/hooks/useRecentChanges';
 import { Link } from 'react-router';
+import { CircleFadingPlus } from 'lucide-react';
 
 const Home = () => {
   const { books, loading, error } = useRecentChanges();
@@ -12,13 +13,14 @@ const Home = () => {
   return (
     <div className="w-full max-w-[75rem] mx-auto px-6 md:px-8 lg:px-10">
       <Hero
-        title="Bibliothèque Municipale"
+        title="Library"
         subtitle="Découvrez notre collection de livres et explorez les derniers ajouts"
       />
 
       <section className="mb-12">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+            <CircleFadingPlus className="w-8 h-8 inline-block mr-2 text-indigo-600 dark:text-indigo-400" />
             Derniers livres ajoutés
           </h2>
           <Link to="/search">

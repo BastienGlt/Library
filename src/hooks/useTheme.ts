@@ -2,9 +2,6 @@ import { useEffect } from 'react';
 import { useAtomValue } from 'jotai';
 import { themeAtom } from '@/store/theme';
 
-/**
- * Hook pour initialiser et synchroniser le thème avec le DOM
- */
 export const useTheme = () => {
   const theme = useAtomValue(themeAtom);
 

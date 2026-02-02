@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { isMockingEnabled, enableMocking, disableMocking } from '@/mocks/config';
 
 /**
@@ -6,12 +6,8 @@ import { isMockingEnabled, enableMocking, disableMocking } from '@/mocks/config'
  * Permet d'activer/désactiver les mocks depuis l'interface
  */
 export const MSWControl = () => {
-  const [isEnabled, setIsEnabled] = useState(isMockingEnabled());
   const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    setIsEnabled(isMockingEnabled());
-  }, []);
+  const isEnabled = isMockingEnabled();
 
   const handleToggle = () => {
     if (isEnabled) {
@@ -27,7 +23,7 @@ export const MSWControl = () => {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-[9999]">
+    <div className="fixed bottom-4 left-4 z-[9999]">
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
@@ -77,15 +73,6 @@ export const MSWControl = () => {
             >
               {isEnabled ? '🔴 Désactiver les mocks' : '🟢 Activer les mocks'}
             </button>
-
-            <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1 pt-2 border-t border-gray-200 dark:border-gray-700">
-              <p className="font-semibold">💡 Astuce console:</p>
-              <code className="block bg-gray-100 dark:bg-gray-900 p-2 rounded">
-                __MSW__.enable() // Activer<br />
-                __MSW__.disable() // Désactiver<br />
-                __MSW__.isEnabled() // Vérifier
-              </code>
-            </div>
           </div>
         </div>
       )}

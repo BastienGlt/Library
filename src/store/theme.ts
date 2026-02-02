@@ -7,7 +7,6 @@ export type Theme = 'light' | 'dark';
 // Atom avec persistance dans localStorage
 export const themeAtom = atomWithStorage<Theme>('library-theme', 'light');
 
-// Atom dérivé pour vérifier si le mode sombre est actif
 export const isDarkModeAtom = atom(
   (get) => get(themeAtom) === 'dark'
 );

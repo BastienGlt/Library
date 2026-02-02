@@ -29,10 +29,6 @@ export const NotFoundPage = () => {
             </Button>
           </Link>
         </div>
-
-        <div className="mt-12 text-center">
-          <p className="text-9xl opacity-10 dark:opacity-5">📚</p>
-        </div>
       </div>
     </div>
   );

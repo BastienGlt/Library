@@ -1,12 +1,13 @@
 import { Outlet } from "react-router";
 import { useTheme } from "@/hooks/useTheme";
-// import { MSWControl } from "@/components/MSWControl";
+import { MSWControl } from "@/components/MSWControl";
+import { DEV_TOOLS_ENABLED } from "@/config/devTools";
 
 import Header from "@/layout/Header";
 import Footer from "@/layout/Footer";
 
 export const Layout = () => {
-  useTheme(); // Initialise et synchronise le thème
+  useTheme();
   
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors">
@@ -15,7 +16,7 @@ export const Layout = () => {
         <Outlet />
       </main>
       <Footer />
-      {/* <MSWControl /> */}
+      {DEV_TOOLS_ENABLED && <MSWControl />}
     </div>
   );
 };
