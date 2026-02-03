@@ -1,4 +1,5 @@
 import { LibraryBig } from "lucide-react";
+import { Link } from "react-router";
 export const Footer = () => {
   return (
     <footer className="bg-gray-900 dark:bg-gray-950 text-white mt-16">
@@ -18,14 +19,17 @@ export const Footer = () => {
             <h4 className="text-lg font-semibold mb-4">Navigation</h4>
             <ul className="space-y-2">
               <li>
-                <a href="/" className="text-gray-400 dark:text-gray-500 hover:text-white dark:hover:text-gray-200 transition-colors text-sm">
+                <Link to="/" className="text-gray-400 dark:text-gray-500 hover:text-white dark:hover:text-gray-200 transition-colors text-sm">
                   Accueil
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/search" className="text-gray-400 dark:text-gray-500 hover:text-white dark:hover:text-gray-200 transition-colors text-sm">
+                <Link 
+                to="/search" 
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="text-gray-400 dark:text-gray-500 hover:text-white dark:hover:text-gray-200 transition-colors text-sm">
                   Recherche
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
