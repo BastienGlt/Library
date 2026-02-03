@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router';
-import { Search as SearchIcon, ListFilter, BookSearch } from 'lucide-react';
+import { Search as SearchIcon, ListFilter, BookSearch, ChevronDown, ChevronUp } from 'lucide-react';
 import { BookCard } from '@/components/BookCard';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { ErrorMessage } from '@/components/ErrorMessage';
@@ -20,6 +20,19 @@ const Search = () => {
     yearFrom: undefined,
     yearTo: undefined,
   }));
+
+  // Synchroniser searchParams avec les URL params quand ils changent
+  useEffect(() => {
+    const query = urlParams.get('q') || '';
+    const sort = urlParams.get('sort') as 'new' | 'old' | 'random' | 'key' | null;
+    
+    setSearchParams(prev => ({
+      ...prev,
+      query,
+      sort: sort || undefined,
+      page: 1,
+    }));
+  }, [urlParams]);
   
   // États temporaires pour les filtres (non appliqués)
   const [tempFilters, setTempFilters] = useState({
@@ -28,6 +41,10 @@ const Search = () => {
     yearTo: searchParams.yearTo || '',
     language: searchParams.language || '',
   });
+
+  // États pour les sections collapsibles sur mobile
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
 
   const { books, loading, error, totalResults } = useBookSearch(searchParams);
 
@@ -76,29 +93,48 @@ const Search = () => {
   };
 
   return (
-    <div className="w-full max-w-[90rem] mx-auto px-6 md:px-8 lg:px-10">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-          <BookSearch className="w-10 h-10 inline-block mr-2 text-indigo-600 dark:text-indigo-400" />
+    <div className="w-full max-w-[90rem] mx-auto px-4 sm:px-6 md:px-8 lg:px-10">
+      <div className="mb-6 md:mb-8">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4 md:mb-6 flex items-center">
+          <BookSearch className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 mr-2 text-indigo-600 dark:text-indigo-400" />
           Recherche de livres
         </h1>
       </div>
 
       {/* Layout avec 3 colonnes */}
-      <div className="flex flex-col lg:flex-row gap-6">
+      <div className="flex flex-col lg:flex-row gap-4 md:gap-6">
         {/* Sidebar gauche - Recherche avancée */}
-        <aside className="lg:w-64 xl:w-80 flex-shrink-0">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 sticky top-24">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-              <SearchIcon className="w-5 h-5" />
-              Recherche avancée
-            </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              Recherchez par critères spécifiques
-            </p>
-            
-            <form onSubmit={handleAdvancedSearch} className="space-y-4">
-              <div className="space-y-4">
+        <aside className="lg:w-64 xl:w-80 flex-shrink-0 lg:order-1">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
+            {/* Header cliquable sur mobile */}
+            <button
+              type="button"
+              onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
+              className="lg:hidden w-full p-4 flex items-center justify-between text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <SearchIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  Recherche avancée
+                </h2>
+              </div>
+              {showAdvancedSearch ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+            </button>
+
+            {/* Header fixe sur desktop */}
+            <div className="hidden lg:block p-6 pb-4">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
+                <SearchIcon className="w-5 h-5" />
+                Recherche avancée
+              </h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Recherchez par critères spécifiques
+              </p>
+            </div>
+
+            {/* Formulaire */}
+            <div className={`${showAdvancedSearch ? 'block' : 'hidden'} lg:block p-4 lg:p-6 lg:pt-2`}>
+              <form onSubmit={handleAdvancedSearch} className="space-y-3 md:space-y-4">
                 <div>
                   <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Titre
@@ -154,20 +190,20 @@ const Search = () => {
                     placeholder="Mots-clés généraux"
                   />
                 </div>
-              </div>
-              
-              <button
-                type="submit"
-                className="w-full bg-indigo-600 dark:bg-indigo-500 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors font-semibold cursor-pointer"
-              >
-                Rechercher
-              </button>
-            </form>
+
+                <button
+                  type="submit"
+                  className="w-full bg-indigo-600 dark:bg-indigo-500 text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors font-semibold cursor-pointer text-sm md:text-base"
+                >
+                  Rechercher
+                </button>
+              </form>
+            </div>
           </div>
         </aside>
 
         {/* Contenu principal - Résultats */}
-        <main className="flex-1 min-w-0">
+        <main className="flex-1 min-w-0 order-3 lg:order-2">
           <div>
             {loading && <LoadingSpinner size="large" message="Recherche en cours..." />}
             
@@ -178,29 +214,29 @@ const Search = () => {
               <>
                 {/* Critères de recherche actifs */}
                 {(searchParams.query || searchParams.author || searchParams.title || searchParams.subject) && (
-                  <div className="mb-3 p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg border border-indigo-200 dark:border-indigo-800">
-                    <h3 className="text-sm font-semibold text-indigo-900 dark:text-indigo-300 mb-2">
-                      <SearchIcon className="w-5 h-5 inline-block mr-2" />
+                  <div className="mb-3 p-3 md:p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg border border-indigo-200 dark:border-indigo-800">
+                    <h3 className="text-xs sm:text-sm font-semibold text-indigo-900 dark:text-indigo-300 mb-2 flex items-center">
+                      <SearchIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                       Critères de recherche actifs
                     </h3>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
                       {searchParams.query && (
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-indigo-300 dark:border-indigo-700 font-medium">
+                        <span className="inline-flex items-center px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-indigo-300 dark:border-indigo-700 font-medium">
                           Mots-clés : {searchParams.query}
                         </span>
                       )}
                       {searchParams.title && (
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-indigo-300 dark:border-indigo-700 font-medium">
+                        <span className="inline-flex items-center px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-indigo-300 dark:border-indigo-700 font-medium">
                           Titre : {searchParams.title}
                         </span>
                       )}
                       {searchParams.author && (
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-indigo-300 dark:border-indigo-700 font-medium">
+                        <span className="inline-flex items-center px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-indigo-300 dark:border-indigo-700 font-medium">
                           Auteur : {searchParams.author}
                         </span>
                       )}
                       {searchParams.subject && (
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-indigo-300 dark:border-indigo-700 font-medium">
+                        <span className="inline-flex items-center px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-indigo-300 dark:border-indigo-700 font-medium">
                           Sujet : {searchParams.subject}
                         </span>
                       )}
@@ -210,24 +246,24 @@ const Search = () => {
 
                 {/* Filtres actifs */}
                 {(searchParams.sort || searchParams.yearFrom || searchParams.yearTo || searchParams.language) && (
-                  <div className="mb-4 p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-200 dark:border-emerald-800">
-                    <h3 className="text-sm font-semibold text-emerald-900 dark:text-emerald-300 mb-2">
-                      <ListFilter className="w-5 h-5 inline-block mr-2" /> 
+                  <div className="mb-4 p-3 md:p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-200 dark:border-emerald-800">
+                    <h3 className="text-xs sm:text-sm font-semibold text-emerald-900 dark:text-emerald-300 mb-2 flex items-center">
+                      <ListFilter className="w-4 h-4 sm:w-5 sm:h-5 mr-2" /> 
                       Filtres appliqués
                       </h3>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
                       {searchParams.sort && (
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-emerald-300 dark:border-emerald-700 font-medium">
+                        <span className="inline-flex items-center px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-emerald-300 dark:border-emerald-700 font-medium">
                           Tri : {searchParams.sort === 'new' ? 'Plus récent' : searchParams.sort === 'old' ? 'Plus ancien' : searchParams.sort === 'random' ? 'Aléatoire' : 'Par clé'}
                         </span>
                       )}
                       {(searchParams.yearFrom || searchParams.yearTo) && (
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-emerald-300 dark:border-emerald-700 font-medium">
+                        <span className="inline-flex items-center px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-emerald-300 dark:border-emerald-700 font-medium">
                           Années : {searchParams.yearFrom || '...'} - {searchParams.yearTo || '...'}
                         </span>
                       )}
                       {searchParams.language && (
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-emerald-300 dark:border-emerald-700 font-medium">
+                        <span className="inline-flex items-center px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-emerald-300 dark:border-emerald-700 font-medium">
                           Langue : {searchParams.language}
                         </span>
                       )}
@@ -235,11 +271,11 @@ const Search = () => {
                   </div>
                 )}
                 
-                <p className="text-gray-600 dark:text-gray-400 mb-6">
+                <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 mb-4 md:mb-6">
                   {totalResults} résultat{totalResults > 1 ? 's' : ''} trouvé{totalResults > 1 ? 's' : ''}
                 </p>
                 
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 md:gap-6">
+                <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
                   {books.map((book) => (
                     <BookCard key={book.key} book={book} />
                   ))}
@@ -269,18 +305,37 @@ const Search = () => {
         </main>
 
         {/* Sidebar droite - Filtres */}
-        <aside className="lg:w-64 xl:w-80 flex-shrink-0">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 sticky top-24">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-              <ListFilter className="w-5 h-5" />
-              Filtres
-            </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              Affinez vos résultats
-            </p>
-            
-            <form onSubmit={handleApplyFilters} className="space-y-4">
-              <div className="space-y-4">
+        <aside className="lg:w-64 xl:w-80 flex-shrink-0 order-2 lg:order-3">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
+            {/* Header cliquable sur mobile */}
+            <button
+              type="button"
+              onClick={() => setShowFilters(!showFilters)}
+              className="lg:hidden w-full p-4 flex items-center justify-between text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <ListFilter className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  Filtres
+                </h2>
+              </div>
+              {showFilters ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+            </button>
+
+            {/* Header fixe sur desktop */}
+            <div className="hidden lg:block p-6 pb-4">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
+                <ListFilter className="w-5 h-5" />
+                Filtres
+              </h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Affinez vos résultats
+              </p>
+            </div>
+
+            {/* Formulaire de filtres */}
+            <div className={`${showFilters ? 'block' : 'hidden'} lg:block p-4 lg:p-6 lg:pt-2`}>
+              <form onSubmit={handleApplyFilters} className="space-y-3 md:space-y-4">
                 <div>
                   <label htmlFor="sort" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Trier par
@@ -352,33 +407,33 @@ const Search = () => {
                     <option value="ita">Italien</option>
                   </select>
                 </div>
-              </div>
-              
-              <div className="space-y-2">
-                <button
-                  type="submit"
-                  className="w-full bg-emerald-600 dark:bg-emerald-500 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 dark:hover:bg-emerald-600 transition-colors font-semibold cursor-pointer"
-                >
-                  Appliquer
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setTempFilters({ sort: '', yearFrom: '', yearTo: '', language: '' });
-                    setSearchParams(prev => ({
-                      ...prev,
-                      sort: undefined,
-                      yearFrom: undefined,
-                      yearTo: undefined,
-                      language: '',
-                    }));
-                  }}
-                  className="w-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-6 py-2.5 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-medium cursor-pointer"
-                >
-                  Réinitialiser
-                </button>
-              </div>
-            </form>
+
+                <div className="space-y-2">
+                  <button
+                    type="submit"
+                    className="w-full bg-emerald-600 dark:bg-emerald-500 text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg hover:bg-emerald-700 dark:hover:bg-emerald-600 transition-colors font-semibold cursor-pointer text-sm md:text-base"
+                  >
+                    Appliquer
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTempFilters({ sort: '', yearFrom: '', yearTo: '', language: '' });
+                      setSearchParams(prev => ({
+                        ...prev,
+                        sort: undefined,
+                        yearFrom: undefined,
+                        yearTo: undefined,
+                        language: '',
+                      }));
+                    }}
+                    className="w-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 md:px-6 py-2 md:py-2.5 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-medium cursor-pointer text-sm md:text-base"
+                  >
+                    Réinitialiser
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </aside>
       </div>
